@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace PatikaAPI.Models;
 
@@ -14,4 +15,6 @@ public partial class Gyogyszer
     public bool Venykoteles { get; set; }
 
     public string Kepnev { get; set; } = null!;
+    [JsonIgnore]
+    public virtual ICollection<Kezel> Kezels { get; set; } = new List<Kezel>();
 }
