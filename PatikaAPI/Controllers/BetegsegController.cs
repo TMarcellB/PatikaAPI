@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PatikaAPI.DTOs;
 using PatikaAPI.Models;
+using System.Net.Sockets;
 using System.Security.Cryptography.Xml;
 
 namespace PatikaAPI.Controllers
@@ -11,6 +12,7 @@ namespace PatikaAPI.Controllers
     [ApiController]
     public class BetegsegController : ControllerBase
     {
+        #region szinkron
         [HttpGet]
         public IActionResult Get()
         {
@@ -203,7 +205,34 @@ namespace PatikaAPI.Controllers
             
         }
 
+        #endregion
+        #region Aszinkron
+        [HttpGet("GetallAsync")]
+        public async Task<IActionResult> GetAllAsync()
+        {
+            using (var context = new PatikaContext())
+            {
+                try
+                {
+                    List<Betegseg> result = await context.Betegsegs.ToListAsync();
+                    return Ok(result);
+                }
+                catch (Exception ex)
+                {
+                    List<Betegseg> hibaslista = new List<Betegseg>();
+                    Betegseg hiba = new Betegseg()
+                    {
+                        Id=-1,
+                        Megnevezes=ex.Message
+                    };
+                    hibaslista.Add(hiba);
+                    return BadRequest(hibaslista);
+                }
+            }
+        }
 
-        
+
+
+        #endregion
     }
 }
