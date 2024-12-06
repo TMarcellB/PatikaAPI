@@ -13,7 +13,7 @@ namespace PatikaAPI.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            using(var context = new PatikaContext())
+            using (var context = new PatikaContext())
             {
                 try
                 {
@@ -51,7 +51,7 @@ namespace PatikaAPI.Controllers
                     {
                         Id = -1,
                         Nev = ex.Message
-                    };               
+                    };
                     return BadRequest(hiba);
 
                 }
@@ -61,7 +61,7 @@ namespace PatikaAPI.Controllers
         [HttpGet("ToBetegsegName")]
         public IActionResult Get(string bname)
         {
-            using(var context = new PatikaContext())
+            using (var context = new PatikaContext())
             {
                 try
                 {
@@ -108,15 +108,15 @@ namespace PatikaAPI.Controllers
         [HttpGet("GyogyszerDTO")]
         public IActionResult GetGyogyszerDTO()
         {
-            using (var context=new PatikaContext())
+            using (var context = new PatikaContext())
             {
                 try
                 {
                     List<GyogyszerNevHatoanyag> result = context.Gyogyszers.Select(gy => new GyogyszerNevHatoanyag()
                     {
-                        Id=gy.Id,
-                        Name=gy.Nev,
-                        Hatoanyag=gy.Hatoanyag
+                        Id = gy.Id,
+                        Name = gy.Nev,
+                        Hatoanyag = gy.Hatoanyag
 
                     }).ToList();
                     return Ok(result);
@@ -134,6 +134,74 @@ namespace PatikaAPI.Controllers
                     return BadRequest(hibalista);
                 }
             }
+
         }
+        [HttpPost("UjGyogyszer")]
+        public IActionResult Post(Gyogyszer ujgyogyszer)
+        {
+            using (var context = new PatikaContext())
+            {
+                try
+                {
+                    context.Gyogyszers.Add(ujgyogyszer);
+                    context.SaveChanges();
+                    return Ok("sikeres rögzítés");
+                    
+                }
+                catch (Exception ex)
+                {
+
+                    return BadRequest(ex.Message);
+                }
+            }
+        }
+        [HttpDelete("DelGyogyszer")]
+        public IActionResult Del(int id)
+        {
+            using(var context =new PatikaContext())
+            {
+                try
+                {
+                    Gyogyszer torl = new Gyogyszer()
+                    {
+                        Id = id
+                    };
+                    context.Gyogyszers.Remove(torl);
+                    context.SaveChanges();
+                    return Ok("sikeres törlés");
+                }
+                catch (Exception ex)
+                {
+
+                    return BadRequest(ex.Message);
+                }
+            }
+        }
+        [HttpPut("GyogyszerUpdate")]
+        public IActionResult Put(Gyogyszer mod)
+        {
+            using( var context=new PatikaContext())
+            {
+                try
+                {
+                    if (context.Gyogyszers.FirstOrDefault(gy => gy.Id == mod.Id) is not null)
+                    {
+                        context.Gyogyszers.Update(mod);
+                        context.SaveChanges();
+                        return Ok("Sikeres");
+                    }
+                    else
+                    {
+                        return NotFound("Nincs ilyen azonosito");
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                    return BadRequest(ex.Message);
+                }
+            }
+        }
+        
     }
 }

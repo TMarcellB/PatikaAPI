@@ -109,14 +109,14 @@ namespace PatikaAPI.Controllers
         [HttpGet("BetegsegDTO")]
         public IActionResult GetBetegsegDTP()
         {
-            using(var context = new PatikaContext())
+            using (var context = new PatikaContext())
             {
                 try
                 {
                     List<BetegsegDTO> result = context.Betegsegs.Select(x => new BetegsegDTO
                     {
                         id = x.Id,
-                        name=x.Megnevezes
+                        name = x.Megnevezes
                     }).ToList();
                     return Ok(result);
 
@@ -124,17 +124,85 @@ namespace PatikaAPI.Controllers
                 catch (Exception ex)
                 {
 
-                    List < BetegsegDTO > hibalist= new();
-                    BetegsegDTO hiba=new BetegsegDTO()
+                    List<BetegsegDTO> hibalist = new();
+                    BetegsegDTO hiba = new BetegsegDTO()
                     {
-                        id=-1,
-                        name=ex.Message
+                        id = -1,
+                        name = ex.Message
                     };
                     hibalist.Add(hiba);
                     return BadRequest(hibalist);
                 }
             }
         }
+            [HttpPost("UjBetegseg")]
+            public IActionResult Post(Betegseg ujBetegseg)
+            {
+                using (var context = new PatikaContext())
+                {
+                    try
+                    {
+                        context.Betegsegs.Add(ujBetegseg);
+                        context.SaveChanges();
+                        return Ok("sikeres rögzítés");
+
+                    }
+                    catch (Exception ex)
+                    {
+
+                        return BadRequest(ex.Message);
+                    }
+                }
+            }
+            [HttpDelete("DelBetegseg")]
+            public IActionResult Del(int id)
+            {
+                using (var context = new PatikaContext())
+                {
+                    try
+                    {
+                        Betegseg torl = new Betegseg()
+                        {
+                            Id = id
+                        };
+                        context.Betegsegs.Remove(torl);
+                        context.SaveChanges();
+                        return Ok("sikeres törlés");
+                    }
+                    catch (Exception ex)
+                    {
+
+                        return BadRequest(ex.Message);
+                    }
+                }
+            }
+            [HttpPut("BetegsegUpdate")]
+            public IActionResult Put(Betegseg mod)
+            {
+                using (var context = new PatikaContext())
+                {
+                    try
+                    {
+                        if (context.Betegsegs.FirstOrDefault(gy => gy.Id == mod.Id) is not null)
+                        {
+                            context.Betegsegs.Update(mod);
+                            context.SaveChanges();
+                            return Ok("Sikeres");
+                        }
+                        else
+                        {
+                            return NotFound("Nincs ilyen azonosito");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
+                        return BadRequest(ex.Message);
+                    }
+                }
+            
+        }
+
 
         
     }
