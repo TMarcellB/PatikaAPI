@@ -1,0 +1,10 @@
+@PatikaAPI_HostAddress = https://localhost:7212
+
+GET {{PatikaAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
+
+GET {{PatikaAPI_HostAddress}}/betegseg
+
+###
