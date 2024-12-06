@@ -183,7 +183,7 @@ namespace PatikaAPI.Controllers
                 {
                     try
                     {
-                        if (context.Betegsegs.FirstOrDefault(gy => gy.Id == mod.Id) is not null)
+                        if (context.Betegsegs.Contains(mod))
                         {
                             context.Betegsegs.Update(mod);
                             context.SaveChanges();
