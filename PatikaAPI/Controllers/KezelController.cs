@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileSystemGlobbing.Internal.PatternContexts;
 using PatikaAPI.Models;
 using System.Text.Json.Serialization;
 
@@ -27,6 +29,29 @@ namespace PatikaAPI.Controllers
             }
 
         }
+        [HttpPost("Ujkezel")]
+        public IActionResult Postos(Kezel ujkezel)
+        {
+            using (var context = new PatikaContext())
+            {
+                try
+                {
+                    
+
+                    context.Kezels.Add(ujkezel);
+                    context.SaveChanges();
+                    return Ok("sikeres cuccos");
+                }
+                catch (Exception ex)
+                {
+
+                    return BadRequest($"{ex.Message}");
+                }
+            }
+
+
+        }
+
         
     }
 }
